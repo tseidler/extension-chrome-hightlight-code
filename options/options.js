@@ -19,6 +19,8 @@ function save_settings() {
       status.textContent = '';
     }, 750);
   });
+
+  chrome.runtime.sendMessage("rebuildContextMenus");
 }
 
 // on load, set the correct settings(saved values)

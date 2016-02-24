@@ -1,10 +1,6 @@
 // Only add the context menu when the extension is installed/updated
 chrome.runtime.onInstalled.addListener(function () {
-  chrome.contextMenus.create({
-    'id':       'tseidler_hilite_code',
-    'title':    'Selection to hilite.me',
-    'contexts': ['selection']
-  });
+  rebuildContextMenusFromOptions();
 });
 
 var default_options = {
@@ -21,8 +17,41 @@ chrome.contextMenus.onClicked.addListener(function(info, tab) {
   }
 });
 
+chrome.runtime.onMessage.addListener(
+  function(request) {
+    console.log('REQUESTETET', request);
+    if(request === "rebuildContextMenus") {
+      rebuildContextMenusFromOptions();
+    }
+  }
+);
+
 function highlightSelection(info) {
   requestHiliteHTML(info.selectionText, default_options, copyToClipBoard);
+}
+
+function rebuildContextMenusFromOptions() {
+  chrome.contextMenus.removeAll();
+  chrome.contextMenus.create({
+    'id':       'tseidler_hilite_code',
+    'title':    'Selection to hilite.me',
+    'contexts': ['selection']
+  });
+
+  chrome.storage.sync.get({
+    highlight_languages: ['php', 'javascript', 'ruby']
+  }, function (items) {
+    items.highlight_languages.forEach(createContextMenuForLanguage);
+  });
+}
+
+function createContextMenuForLanguage(language_key) {
+  chrome.contextMenus.create({
+    'id':         'tseidler_hilite_language_' + language_key,
+    'title':      language_key,
+    'parentId':   'tseidler_hilite_code',
+    'contexts': ['selection']
+  });
 }
 
 function requestHiliteHTML(text, options, callback) {
