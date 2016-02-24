@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Highlight to Hilite.me settings</title>
+  <link rel="stylesheet" type="text/css" href="options.css">
+</head>
+<body>
+  <div id="wrapper">
+    <h1>Settings</h1>
+
+    <div class="optionContainer">
+      <span class="option">Highlight style (<a href="https://help.farbox.com/pygments.html" target="_blank">help</a>):</span>
+      <div class="option">
+        <select id="output_style">
+          <option value="autumn">autumn</option>
+           <option value="borland">borland</option>
+           <option value="bw">bw</option>
+           <option value="colorful">colorful</option>
+           <option value="default">default</option>
+           <option value="emacs">emacs</option>
+           <option value="friendly">friendly</option>
+           <option value="fruity">fruity</option>
+           <option value="manni">manni</option>
+           <option value="monokai">monokai</option>
+           <option value="murphy">murphy</option>
+           <option value="native">native</option>
+           <option value="pastie">pastie</option>
+           <option value="perldoc">perldoc</option>
+           <option value="rrt">rrt</option>
+           <option value="tango">tango</option>
+           <option value="trac">trac</option>
+           <option value="vim">vim</option>
+           <option value="vs">vs</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="optionContainer">
+      <label for="line_numbers" class="option">Line numbers:</label>
+      <div class="option"><input type="checkbox" id="line_numbers"></div>
+    </div>
+
+    <div class="optionContainer">
+      <span class="option">Enabled languages:</span>
+      <div class="option">
+        <label><input type="checkbox" name="enabled_languages[]" value="csharp">C#</label><br/>
+        <label><input type="checkbox" name="enabled_languages[]" value="cpp">C++</label><br/>
+        <label><input type="checkbox" name="enabled_languages[]" value="d">D</label><br/>
+        <label><input type="checkbox" name="enabled_languages[]" value="fsharp">F#</label><br/>
+        <label><input type="checkbox" name="enabled_languages[]" value="html">HTML</label><br/>
+        <label><input type="checkbox" name="enabled_languages[]" value="javascript">JavaScript</label><br/>
+        <label><input type="checkbox" name="enabled_languages[]" value="json">JSON</label><br/>
+        <label><input type="checkbox" name="enabled_languages[]" value="php">PHP</label><br/>
+        <label><input type="checkbox" name="enabled_languages[]" value="python">Python</label><br/>
+        <label><input type="checkbox" name="enabled_languages[]" value="ruby">Ruby</label><br/>
+        <label><input type="checkbox" name="enabled_languages[]" value="scss">SCSS</label><br/>
+        <label><input type="checkbox" name="enabled_languages[]" value="yaml">YAML</label><br/>
+      </div>
+    </div>
+
+    <div id="status"></div>
+
+    <button id="save">Save</button> <button id="cancel">Cancel</button>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>

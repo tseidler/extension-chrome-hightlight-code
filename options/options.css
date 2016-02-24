@@ -1,0 +1,17 @@
+#wrapper {
+  width: 500px;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  padding: 0 20px 20px 20px;
+  font-size: 16px;
+}
+
+.optionContainer {
+  margin-bottom: 15px;
+}
+
+.option {
+  width: 225px;
+  display: inline-block;
+  vertical-align: top;
+}
