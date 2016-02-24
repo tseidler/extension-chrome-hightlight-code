@@ -1,0 +1,25 @@
+# This is the top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+charset = utf-8
+
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+max_line_length = 120
+
+# 2 space indentation
+indent_style = space
+indent_size = 2
+
+# Does UTF-8 in Ruby work without having to specify the encoding at the start of the file?
+# Most files are us-ascii, so let's be conservative.
+[*.rb]
+charset = latin1
+
+# These files really need UTF-8 due to special characters in the source.
+[{spec/service/ldap/user_filler/call_spec.rb,app/presenters/courses/student_state_reports_presenter.rb,coconut_webdav/spec/lib/coconut_webdav/request/locks_spec.rb,coconut_webdav/spec/integration/webdav_spec.rb,utility/ldap/csv2ldap.rb}]
+charset = utf-8
