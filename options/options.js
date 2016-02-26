@@ -9,9 +9,9 @@ function save_settings() {
   });
 
   chrome.storage.sync.set({
-    highlight_output_style: style,
-    highlight_line_number: line_numbers,
-    highlight_languages: selected_languages
+    'highlight_output_style': style,
+    'highlight_line_number': line_numbers,
+    'highlight_languages': selected_languages
   }, function success() {
     var status = document.getElementById('status');
     status.textContent = 'Settings saved.';
@@ -26,9 +26,9 @@ function save_settings() {
 // on load, set the correct settings(saved values)
 function restore_settings() {
   chrome.storage.sync.get({
-    highlight_output_style: 'colorful',
-    highlight_line_number: true,
-    highlight_languages: ['javascript', 'ruby', 'html']
+    'highlight_output_style': 'colorful',
+    'highlight_line_number':  true,
+    'highlight_languages':    ['javascript', 'ruby', 'html']
   }, function (items) {
     document.getElementById('output_style').value = items.highlight_output_style;
     document.getElementById('line_numbers').checked = items.highlight_line_number;
