@@ -1,20 +1,50 @@
 chrome.runtime.onInstalled.addListener(installListener);
-chrome.contextMenus.onClicked.addListener(contextMenuListener);
 chrome.runtime.onMessage.addListener(messageListener);
+chrome.contextMenus.onClicked.addListener(contextMenuListener);
+var notificationsSent = 0;
 
 function installListener() {
   rebuildContextMenusFromOptions();
-}
-function contextMenuListener(info) {
-  if(info.parentMenuItemId === 'tseidler_hilite_code') {
-    var language = info.menuItemId.slice('tseidler_hilite_language_'.length);
-    highlightSelection(info.selectionText, language);
-  }
 }
 function messageListener(request) {
   if(request === "rebuildContextMenus") {
     rebuildContextMenusFromOptions();
   }
+}
+function contextMenuListener(info) {
+  if(info.parentMenuItemId === 'tseidler_hilite_code') {
+    var language = info.menuItemId.slice('tseidler_hilite_language_'.length);
+    highlightSelection(info.selectionText, language);
+  } else if(info.menuItemId === 'tseidler_hilite_code') {
+    // if no language is given, highlightSelection will use the first language
+    highlightSelection(info.selectionText);
+  }
+}
+
+function rebuildContextMenusFromOptions() {
+  chrome.contextMenus.removeAll();
+  chrome.contextMenus.create({
+    'id':         'tseidler_hilite_code',
+    'title':      'Selection to hilite.me',
+    'contexts':   ['selection']
+  });
+
+  chrome.storage.sync.get({
+    'highlight_languages': ['javascript', 'ruby', 'html']
+  }, function (items) {
+    if(items.highlight_languages.length > 1) {
+      items.highlight_languages.forEach(createContextMenuForLanguage);
+    }
+  });
+}
+
+function createContextMenuForLanguage(language_key) {
+  chrome.contextMenus.create({
+    'id':         'tseidler_hilite_language_' + language_key,
+    'title':      language_key,
+    'parentId':   'tseidler_hilite_code',
+    'contexts':   ['selection']
+  });
 }
 
 function highlightSelection(selection, lexer) {
@@ -22,10 +52,11 @@ function highlightSelection(selection, lexer) {
   chrome.storage.sync.get({
     'highlight_output_style': 'colorful',
     'highlight_line_number':  true,
-    'highlight_div_styles': 'none'
+    'highlight_div_styles': 'none',
+    'highlight_languages':  ['javascript']
   }, function (items) {
     var settings = {
-      'lexer':      lexer,
+      'lexer':      lexer || items.highlight_languages[0] || 'javascript',
       'style':      items.highlight_output_style,
       'linenos':    items.highlight_line_number,
       'divstyles':  items.highlight_div_styles
@@ -47,8 +78,8 @@ function doHilightAPIRequest(text, options, callback) {
   xhr.withCredentials = true;
   xhr.addEventListener("readystatechange", function () {
     if (this.readyState === this.DONE) {
-      console.log(this.responseText);
       callback(this.responseText);
+      renderStatusNotification("Done! HTML copied to clipboard.");
     }
   });
   xhr.open("POST", api_uri);
@@ -67,26 +98,13 @@ function copyToClipBoard(info) {
   body.removeChild(copyFrom);
 }
 
-function rebuildContextMenusFromOptions() {
-  chrome.contextMenus.removeAll();
-  chrome.contextMenus.create({
-    'id':         'tseidler_hilite_code',
-    'title':      'Selection to hilite.me',
-    'contexts':   ['selection']
-  });
-
-  chrome.storage.sync.get({
-    'highlight_languages': ['php', 'javascript', 'ruby']
-  }, function (items) {
-    items.highlight_languages.forEach(createContextMenuForLanguage);
-  });
-}
-
-function createContextMenuForLanguage(language_key) {
-  chrome.contextMenus.create({
-    'id':         'tseidler_hilite_language_' + language_key,
-    'title':      language_key,
-    'parentId':   'tseidler_hilite_code',
-    'contexts':   ['selection']
-  });
+function renderStatusNotification(message) {
+  var notificationOptions = {
+    "type":       "basic",
+    "title":      "Highlighting done!",
+    "message":    message,
+    "iconUrl":    "icon.png",
+    "isClickable": false
+  };
+  chrome.notifications.create(String(notificationsSent++), notificationOptions);
 }
