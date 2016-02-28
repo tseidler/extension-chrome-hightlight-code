@@ -164,8 +164,7 @@
         "space-after-function-name": 0,                 // DEPRECATED: require a space after function names ***
         "space-after-keywords": 0,                      // require a space after certain keywords ***
         "space-before-blocks": 0,                       // require or disallow space before blocks ***
-        "space-before-function-paren": 0,               // require or disallow space before function opening parenthesis ***
-        "space-before-function-parentheses": 0,         // DEPRECATED: require or disallow space before function parentheses ***
+        "space-before-function-paren":  [2, { "anonymous": "always", "named": "never" }],  // require or disallow space before function opening parenthesis ***
         "space-in-brackets": 0,                         // require or disallow spaces inside brackets ***
         "space-in-parens": 0,                           // require or disallow spaces inside parentheses ***
         "space-infix-ops": 0,                           // require spaces around operators ***
