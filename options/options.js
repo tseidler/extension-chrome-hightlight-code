@@ -20,7 +20,7 @@ function save_settings() {
     }, 750);
   });
 
-  chrome.runtime.sendMessage('rebuildContextMenus');
+  chrome.runtime.sendMessage({'type': 'rebuildContextMenus'});
 }
 
 // on load, set the correct settings(saved values)

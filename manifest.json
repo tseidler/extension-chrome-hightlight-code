@@ -3,7 +3,7 @@
 
   "name": "Highlight to Hilite.me",
   "description": "This extension allows the user to highlight code to send to hilite.me",
-  "version": "1.0",
+  "version": "0.1",
   "icons": {
     "16":   "icons/icon16.png",
     "48":   "icons/icon48.png",
@@ -29,5 +29,11 @@
   "background": {
     "scripts": ["main.js"],
     "persistent": false
-  }
+  },
+  "content_scripts": [
+    {
+      "matches":  ["<all_urls>"],
+      "js":       ["selectionListener.js"]
+    }
+  ]
 }

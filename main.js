@@ -1,6 +1,7 @@
 chrome.runtime.onInstalled.addListener(installListener);
 chrome.runtime.onMessage.addListener(messageListener);
 chrome.contextMenus.onClicked.addListener(contextMenuListener);
+var selectedText = '';
 var numberOfNotificationsSent = 0;
 var languageDict = {
   'csharp':       'C#',
@@ -21,17 +22,19 @@ function installListener() {
   rebuildContextMenusFromOptions();
 }
 function messageListener(request) {
-  if(request === 'rebuildContextMenus') {
+  if(request.type === 'rebuildContextMenus') {
     rebuildContextMenusFromOptions();
+  } else if(request.type === 'selection') {
+    selectedText = request.selection;
   }
 }
 function contextMenuListener(info) {
   if(info.parentMenuItemId === 'tseidler_hilite_code') {
     var language = info.menuItemId.slice('tseidler_hilite_language_'.length);
-    highlightSelection(info.selectionText, language);
+    highlightSelection(selectedText, language);
   } else if(info.menuItemId === 'tseidler_hilite_code') {
     // if no language is given, highlightSelection will use the first language
-    highlightSelection(info.selectionText);
+    highlightSelection(selectedText);
   }
 }
 
@@ -66,14 +69,14 @@ function highlightSelection(selection, lexer) {
   // get settings from storage & do request
   chrome.storage.sync.get({
     'highlight_output_style': 'colorful',
-    'highlight_line_number':  true,
+    'highlight_line_number':  false,
     'highlight_div_styles': 'none',
     'highlight_languages':  ['javascript']
   }, function (items) {
     var settings = {
       'lexer':      lexer || items.highlight_languages[0] || 'javascript',
       'style':      items.highlight_output_style,
-      'linenos':    items.highlight_line_number,
+      'linenos':    items.highlight_line_number || '',
       'divstyles':  items.highlight_div_styles
     };
 
@@ -118,7 +121,7 @@ function renderStatusNotification(message) {
     'type':       'basic',
     'title':      'Highlighting done!',
     'message':    message,
-    'iconUrl':    'icon.png',
+    'iconUrl':    'icons/icon128.png',
     'isClickable': false
   };
   chrome.notifications.create(String(numberOfNotificationsSent++), notificationOptions);
