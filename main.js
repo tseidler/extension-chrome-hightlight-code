@@ -1,13 +1,13 @@
 chrome.runtime.onInstalled.addListener(installListener);
 chrome.runtime.onMessage.addListener(messageListener);
 chrome.contextMenus.onClicked.addListener(contextMenuListener);
-var notificationsSent = 0;
+var numberOfNotificationsSent = 0;
 
 function installListener() {
   rebuildContextMenusFromOptions();
 }
 function messageListener(request) {
-  if(request === "rebuildContextMenus") {
+  if(request === 'rebuildContextMenus') {
     rebuildContextMenusFromOptions();
   }
 }
@@ -32,6 +32,7 @@ function rebuildContextMenusFromOptions() {
   chrome.storage.sync.get({
     'highlight_languages': ['javascript', 'ruby', 'html']
   }, function (items) {
+    // if there's only one item, render only the top-level context item
     if(items.highlight_languages.length > 1) {
       items.highlight_languages.forEach(createContextMenuForLanguage);
     }
@@ -69,20 +70,20 @@ function highlightSelection(selection, lexer) {
 function doHilightAPIRequest(text, options, callback) {
   var api_uri = 'http://hilite.me/api';
   var data = new FormData();
-  data.append("code", text);
+  data.append('code', text);
   Object.keys(options).forEach(function (key) {
     data.append(key, options[key]);
   });
 
   var xhr = new XMLHttpRequest();
   xhr.withCredentials = true;
-  xhr.addEventListener("readystatechange", function () {
+  xhr.addEventListener('readystatechange', function () {
     if (this.readyState === this.DONE) {
       callback(this.responseText);
-      renderStatusNotification("Done! HTML copied to clipboard.");
+      renderStatusNotification('Done! HTML copied to clipboard.');
     }
   });
-  xhr.open("POST", api_uri);
+  xhr.open('POST', api_uri);
   xhr.send(data);
 }
 
@@ -100,11 +101,11 @@ function copyToClipBoard(info) {
 
 function renderStatusNotification(message) {
   var notificationOptions = {
-    "type":       "basic",
-    "title":      "Highlighting done!",
-    "message":    message,
-    "iconUrl":    "icon.png",
-    "isClickable": false
+    'type':       'basic',
+    'title':      'Highlighting done!',
+    'message':    message,
+    'iconUrl':    'icon.png',
+    'isClickable': false
   };
-  chrome.notifications.create(String(notificationsSent++), notificationOptions);
+  chrome.notifications.create(String(numberOfNotificationsSent++), notificationOptions);
 }
