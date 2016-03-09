@@ -2,6 +2,20 @@ chrome.runtime.onInstalled.addListener(installListener);
 chrome.runtime.onMessage.addListener(messageListener);
 chrome.contextMenus.onClicked.addListener(contextMenuListener);
 var numberOfNotificationsSent = 0;
+var languageDict = {
+  'csharp':       'C#',
+  'cpp':          'C++',
+  'd':            'D',
+  'fsharp':       'F#',
+  'html':         'HTML',
+  'javascript':   'JavaScript',
+  'json':         'JSON',
+  'php':          'PHP',
+  'python':       'Python',
+  'ruby':         'Ruby',
+  'scss':         'SCSS',
+  'yaml':         'YAML'
+};
 
 function installListener() {
   rebuildContextMenusFromOptions();
@@ -42,7 +56,7 @@ function rebuildContextMenusFromOptions() {
 function createContextMenuForLanguage(language_key) {
   chrome.contextMenus.create({
     'id':         'tseidler_hilite_language_' + language_key,
-    'title':      language_key,
+    'title':      languageDict[language_key],
     'parentId':   'tseidler_hilite_code',
     'contexts':   ['selection']
   });
